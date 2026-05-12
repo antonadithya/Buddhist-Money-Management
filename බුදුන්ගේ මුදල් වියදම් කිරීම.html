@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>බුදුරජාණන් වහන්සේ දේශනා කළ ආර්ථික කළමනාකරණය</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Tailwind Config for Custom Colors & Fonts -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'buddhist-bg': '#faf8f5',
+                        'buddhist-primary': '#b45309', /* Amber 700 - Robe Color */
+                        'buddhist-secondary': '#78350f', /* Amber 900 */
+                        'buddhist-accent': '#0f766e', /* Teal 700 - Harmony/Nature */
+                        'buddhist-text': '#292524', /* Stone 800 */
+                        'buddhist-muted': '#78716c', /* Stone 500 */
+                    },
+                    fontFamily: {
+                        sans: ['system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #faf8f5;
+            color: #292524;
+            scroll-behavior: smooth;
+        }
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .tab-btn.active {
+            background-color: #b45309;
+            color: white;
+            border-color: #b45309;
+        }
+    </style>
+
+    <!-- Chosen Palette: Warm Neutrals with Amber/Saffron (buddhist-primary) and Teal (buddhist-accent) accents. -->
+    <!-- Application Structure Plan: 
+         1. Hero Section: Introduction to the Buddha's practical teachings on wealth.
+         2. Interactive Budget Planner (Singalovada Sutta): A calculator and dynamic pie chart showing the 1:2:1 wealth division rule. Lets users apply ancient wisdom to modern salaries.
+         3. Core Principles Grid (Vyagghapajja Sutta): 4 interactive cards explaining how to earn, protect, and balance wealth.
+         4. The 4 Kinds of Happiness (Anana Sutta): Interactive tabs detailing what true financial happiness means in Buddhism.
+         This structure moves from practical daily budgeting to long-term wealth building, and finally to the psychological well-being of financial stability. -->
+    <!-- Visualization & Content Choices: 
+         - Goal: Inform/Calculate -> Presentation: Dynamic Donut Chart (Chart.js) -> Interaction: Real-time calculation based on user income input -> Justification: Makes the 2500-year-old 1:2:1 ratio immediately applicable to the user's life.
+         - Goal: Organize -> Presentation: CSS Grid of Cards -> Interaction: Hover states -> Justification: Clearly separates the 4 steps of wealth generation.
+         - Goal: Explain Relationships -> Presentation: Tabbed Interface -> Interaction: Click to reveal -> Justification: Prevents text overload and groups the 4 types of happiness logically. 
+         Library/Method: Chart.js for visualization, Vanilla JS for interaction, DOM manipulation. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-2">
+                    <span class="text-3xl text-buddhist-primary">☸</span>
+                    <span class="font-bold text-xl text-buddhist-secondary">බෞද්ධ ආර්ථික දර්ශනය</span>
+                </div>
+                <div class="hidden md:flex space-x-6 text-sm font-semibold text-buddhist-muted">
+                    <a href="#budget" class="hover:text-buddhist-primary transition">ධනය බෙදීම</a>
+                    <a href="#principles" class="hover:text-buddhist-primary transition">ධනය ඉපයීම</a>
+                    <a href="#happiness" class="hover:text-buddhist-primary transition">මූල්‍ය සතුට</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="max-w-6xl mx-auto px-4 py-16 md:py-24 text-center fade-in">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-buddhist-secondary mb-6 leading-tight">
+            සාර්ථක ජීවිතයකට <br> <span class="text-buddhist-primary">බුදුදහමෙන් ආර්ථික උපදෙස්</span>
+        </h1>
+        <p class="text-lg md:text-xl text-buddhist-muted max-w-3xl mx-auto leading-relaxed">
+            බුදුරජාණන් වහන්සේ දේශනා කළ ධර්මය හුදෙක් පරලොව සුවය සඳහා පමණක් නොව, මෙලොව ජීවිතය ප්‍රීතිමත්ව හා ණය බරින් තොරව ගත කිරීම සඳහාද මනා මඟ පෙන්වීමක් සපයයි. සිඟාලෝවාද, ව්‍යග්ඝපජ්ජ සහ අනණ වැනි සූත්‍ර මගින් මුදල් ඉපයීම, වියදම් කිරීම සහ සුරැකීම පිළිබඳව මනාව පැහැදිලි කර ඇත.
+        </p>
+    </header>
+
+    <!-- Section 1: The Budget (Singalovada Sutta) -->
+    <section id="budget" class="py-16 bg-white border-y border-stone-200">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <span class="text-4xl mb-4 block">⚖️</span>
+                <h2 class="text-3xl font-bold text-buddhist-secondary mb-4">සිඟාලෝවාද සූත්‍රය: ධනය පරිහරණය</h2>
+                <p class="text-buddhist-muted max-w-2xl mx-auto">
+                    පුද්ගලයෙකු තමා උපයන ධනය කොටස් හතරකට බෙදා වියදම් කළ යුතු බව බුදුරජාණන් වහන්සේ දේශනා කළ සේක. පහතින් ඔබේ මාසික ආදායම ඇතුළත් කර, එම බෞද්ධ ආර්ථික සැලසුම ඔබේ ජීවිතයට ගළපා ගන්න.
+                </p>
+                <div class="mt-6 p-4 bg-amber-50 rounded-lg inline-block italic text-buddhist-secondary border-l-4 border-buddhist-primary">
+                    "ඒකෙන භොගේ භුඤ්ජෙය්‍ය - ද්වීහි කම්මං පයෝජයේ<br>චතුත්ථඤ්ච නිදහෙය්‍ය - ආපදාසු භවිස්සති"
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <!-- Calculator Inputs & Results -->
+                <div class="bg-stone-50 p-8 rounded-2xl shadow-sm border border-stone-100">
+                    <label for="incomeInput" class="block text-sm font-bold text-stone-700 mb-2">ඔබේ මාසික ආදායම ඇතුළත් කරන්න (රු.):</label>
+                    <input type="number" id="incomeInput" value="100000" class="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-buddhist-primary focus:border-buddhist-primary transition text-lg font-semibold text-stone-800" placeholder="උදා: 100000">
+
+                    <div class="mt-8 space-y-4" id="budgetResults">
+                        <!-- Results dynamically populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Chart Container -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 flex flex-col justify-center">
+                    <h3 class="text-center font-bold text-stone-700 mb-2">ධනය බෙදිය යුතු අනුපාතය (1:2:1)</h3>
+                    <div class="chart-container">
+                        <canvas id="budgetChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Core Principles (Vyagghapajja Sutta) -->
+    <section id="principles" class="py-16 bg-buddhist-bg">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <span class="text-4xl mb-4 block">🛡️</span>
+                <h2 class="text-3xl font-bold text-buddhist-secondary mb-4">ව්‍යග්ඝපජ්ජ සූත්‍රය: මෙලොව දියුණුවට කරුණු 4ක්</h2>
+                <p class="text-buddhist-muted max-w-2xl mx-auto">
+                    දීඝජානු කෝලිය පුත්‍රයාට දේශනා කළ පරිදි, ගිහි ජීවිතයක් ගත කරන පුද්ගලයෙකු ආර්ථික වශයෙන් ස්ථාවර වීමට අනුගමනය කළ යුතු ප්‍රධාන ප්‍රතිපත්ති හතරකි.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Card 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-buddhist-primary hover:shadow-md transition group">
+                    <div class="text-3xl mb-4">💪</div>
+                    <h3 class="text-xl font-bold text-stone-800 mb-2 group-hover:text-buddhist-primary transition">උට්ඨාන සම්පදා</h3>
+                    <p class="text-sm font-semibold text-buddhist-accent mb-3">උත්සාහයෙන් ධනය ඉපයීම</p>
+                    <p class="text-stone-600 text-sm">
+                        කම්මැලි නොවී, උද්‍යෝගයෙන් යුතුව තම රැකියාව හෝ ව්‍යාපාරය කිරීමයි. දහදිය වගුරුවා, දැහැමිව හා නීත්‍යානුකූලව ධනය ඉපයීම මෙයින් අදහස් කෙරේ.
+                    </p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-buddhist-primary hover:shadow-md transition group">
+                    <div class="text-3xl mb-4">🔐</div>
+                    <h3 class="text-xl font-bold text-stone-800 mb-2 group-hover:text-buddhist-primary transition">ආරක්ඛ සම්පදා</h3>
+                    <p class="text-sm font-semibold text-buddhist-accent mb-3">ඉපයූ ධනය රැකගැනීම</p>
+                    <p class="text-stone-600 text-sm">
+                        උපයාගත් ධනය සොරුන්ගෙන්, ගින්නෙන්, ජලයෙන්, හා නුසුදුසු දායාදයන්ගෙන් ආරක්ෂා කර ගැනීමයි. අනවශ්‍ය වියදම් හා නාස්තිය අවම කිරීම මෙහි ප්‍රධාන අංගයකි.
+                    </p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-buddhist-primary hover:shadow-md transition group">
+                    <div class="text-3xl mb-4">🤝</div>
+                    <h3 class="text-xl font-bold text-stone-800 mb-2 group-hover:text-buddhist-primary transition">කල්‍යාණ මිත්තතා</h3>
+                    <p class="text-sm font-semibold text-buddhist-accent mb-3">යහපත් මිතුරන් ආශ්‍රය</p>
+                    <p class="text-stone-600 text-sm">
+                        සුරාසූදුවට, පාපයට යොමු නොකරන, තම දියුණුවට අත දෙන ගුණවත් මිතුරන් ආශ්‍රය කිරීමයි. නරක මිතුරන් නිසා ධනය විනාශ විය හැක.
+                    </p>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-buddhist-primary hover:shadow-md transition group">
+                    <div class="text-3xl mb-4">⚖️</div>
+                    <h3 class="text-xl font-bold text-stone-800 mb-2 group-hover:text-buddhist-primary transition">සමජීවිකතා</h3>
+                    <p class="text-sm font-semibold text-buddhist-accent mb-3">සමබර ජීවන රටාව</p>
+                    <p class="text-stone-600 text-sm">
+                        ආදායමට සරිලන සේ වියදම් කිරීමයි. ආදායමට වඩා වියදම් කිරීමෙන් ණය ගැති වේ. ඉතා අඩුවෙන් වියදම් කරමින් මසුරු වීමද බුදුදහම අනුමත නොකරයි.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: The 4 Kinds of Happiness (Anana Sutta) -->
+    <section id="happiness" class="py-16 bg-white border-t border-stone-200">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="text-center mb-10">
+                <span class="text-4xl mb-4 block">🌸</span>
+                <h2 class="text-3xl font-bold text-buddhist-secondary mb-4">අනණ සූත්‍රය: සැබෑ මූල්‍යමය සතුට</h2>
+                <p class="text-buddhist-muted">
+                    ගිහියෙකුට විඳිය හැකි සැප හතරක් බුදුරජාණන් වහන්සේ පෙන්වා දී ඇත. මුදල් ඉපයීමේ හා වියදම් කිරීමේ අවසාන අරමුණ මෙම මානසික සුවය ලබා ගැනීමයි. පහත බොත්තම් මත ක්ලික් කරන්න.
+                </p>
+            </div>
+
+            <!-- Interactive Tabs -->
+            <div class="flex flex-wrap justify-center gap-2 mb-8">
+                <button class="tab-btn active px-6 py-3 rounded-full font-semibold border text-sm md:text-base transition text-stone-600 border-stone-300 hover:bg-stone-100" data-target="tab-1">1. අත්ථි සුඛය</button>
+                <button class="tab-btn px-6 py-3 rounded-full font-semibold border text-sm md:text-base transition text-stone-600 border-stone-300 hover:bg-stone-100" data-target="tab-2">2. භෝග සුඛය</button>
+                <button class="tab-btn px-6 py-3 rounded-full font-semibold border text-sm md:text-base transition text-stone-600 border-stone-300 hover:bg-stone-100" data-target="tab-3">3. අනණ සුඛය</button>
+                <button class="tab-btn px-6 py-3 rounded-full font-semibold border text-sm md:text-base transition text-stone-600 border-stone-300 hover:bg-stone-100" data-target="tab-4">4. අනවජ්ජ සුඛය</button>
+            </div>
+
+            <div class="bg-stone-50 p-8 rounded-2xl shadow-inner border border-stone-200 min-h-[200px] flex items-center justify-center">
+                
+                <!-- Tab 1 -->
+                <div id="tab-1" class="tab-content active text-center max-w-2xl">
+                    <div class="text-5xl mb-4">💰</div>
+                    <h3 class="text-2xl font-bold text-buddhist-primary mb-3">අත්ථි සුඛය (ධනය තිබීමේ සතුට)</h3>
+                    <p class="text-stone-700 text-lg leading-relaxed">
+                        "මා විසින් දැහැමිව, ස්වෝත්සාහයෙන් උපයාගත් ධනයක් ඇත" යැයි සිතමින් ලබන මානසික සතුටයි. තමාට අවශ්‍ය විටෙක ප්‍රයෝජනයට ගැනීමට ප්‍රමාණවත් වත්කමක් තිබීම පුද්ගලයෙකුට මහත් මානසික සහනයක් ගෙන දෙයි.
+                    </p>
+                </div>
+
+                <!-- Tab 2 -->
+                <div id="tab-2" class="tab-content text-center max-w-2xl">
+                    <div class="text-5xl mb-4">🍽️</div>
+                    <h3 class="text-2xl font-bold text-buddhist-primary mb-3">භෝග සුඛය (ධනය භුක්ති විඳීමේ සතුට)</h3>
+                    <p class="text-stone-700 text-lg leading-relaxed">
+                        තමා උපයාගත් ධනයෙන් තමාත් යැපෙමින්, පවුලේ අයත් පෝෂණය කරමින්, අන් අයටත් උදව් උපකාර කරමින් (පින් දහම් කරමින්) ලබන සතුටයි. ධනය ගොඩගසාගෙන නොසිට, එයින් ප්‍රයෝජන ගැනීම බුදුදහම අගය කරයි.
+                    </p>
+                </div>
+
+                <!-- Tab 3 -->
+                <div id="tab-3" class="tab-content text-center max-w-2xl">
+                    <div class="text-5xl mb-4">🕊️</div>
+                    <h3 class="text-2xl font-bold text-buddhist-primary mb-3">අනණ සුඛය (ණය නැතිවීමේ සතුට)</h3>
+                    <p class="text-stone-700 text-lg leading-relaxed">
+                        "මා කිසිවෙකුට, කුඩා හෝ ලොකු මුදලක් ණය නැත" කියා සිතමින් ලබන නිරවුල් සතුටයි. ණය වී ජීවත් වීම මහා දුකක් ලෙස බුදුදහමේ පෙන්වා දී ඇත. සමජීවිකතාව (ආදායමට සරිලන වියදම) තුළින් මෙම සතුට ළඟා කරගත හැක.
+                    </p>
+                </div>
+
+                <!-- Tab 4 -->
+                <div id="tab-4" class="tab-content text-center max-w-2xl">
+                    <div class="text-5xl mb-4">✨</div>
+                    <h3 class="text-2xl font-bold text-buddhist-primary mb-3">අනවජ්ජ සුඛය (නිවැරදිව ජීවත්වීමේ සතුට)</h3>
+                    <p class="text-stone-700 text-lg leading-relaxed">
+                        තමන්ගේ ධනය ඉපයීමේ මාර්ගයත්, වියදම් කරන ආකාරයත් නීත්‍යානුකූල හා සදාචාරාත්මක වීම නිසා සිතට දැනෙන නිදොස් බවේ සතුටයි. කූටෝපාය, වංචාව, හෝ සතුන් මැරීම වැනි වැරදි ජීවනෝපායන්ගෙන් තොරව ලබන ඉහළම මානසික සුවය මෙයයි.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-stone-900 text-stone-400 py-8 text-center">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col items-center">
+            <span class="text-3xl text-stone-600 mb-4 block">☸</span>
+            <p class="text-sm max-w-md mx-auto">
+                මෙම පිටුව බුදුරජාණන් වහන්සේගේ ආර්ථික දර්ශනය නූතන සමාජයට ගළපා ගැනීම සඳහා සකස් කරන ලද්දකි. සබ්බ දානං ධම්ම දානං ජිනාති. (සියලු දානයන් අතරින් ධර්ම දානය උතුම් වේ.)
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 1. Budget Calculator & Chart Logic (Singalovada Sutta) ---
+            
+            const incomeInput = document.getElementById('incomeInput');
+            const resultsContainer = document.getElementById('budgetResults');
+            const ctx = document.getElementById('budgetChart').getContext('2d');
+            
+            let budgetChart;
+
+            // Formatter for LKR
+            const currencyFormatter = new Intl.NumberFormat('si-LK', {
+                style: 'currency',
+                currency: 'LKR',
+                maximumFractionDigits: 0
+            });
+
+            // The ratios defined by Buddha (1/4, 2/4, 1/4)
+            const RATIOS = {
+                consumption: 0.25, // ඒකෙන භොගේ භුඤ්ජෙය්‍ය (25%)
+                investment: 0.50,  // ද්වීහි කම්මං පයෝජයේ (50%)
+                savings: 0.25      // චතුත්ථඤ්ච නිදහෙය්‍ය (25%)
+            };
+
+            function updateBudget() {
+                const income = parseFloat(incomeInput.value) || 0;
+                
+                const dataValues = [
+                    income * RATIOS.consumption,
+                    income * RATIOS.investment,
+                    income * RATIOS.savings
+                ];
+
+                // Update HTML Results
+                resultsContainer.innerHTML = `
+                    <div class="flex justify-between items-center p-3 bg-white rounded border-l-4 border-[#14b8a6]">
+                        <div>
+                            <p class="text-sm text-stone-500">පරිභෝජනයට (දෛනික වියදම් - 25%)</p>
+                            <p class="font-bold text-stone-800">ඒකෙන භොගේ භුඤ්ජෙය්‍ය</p>
+                        </div>
+                        <p class="text-lg font-bold text-[#0f766e]">${currencyFormatter.format(dataValues[0])}</p>
+                    </div>
+                    <div class="flex justify-between items-center p-3 bg-white rounded border-l-4 border-[#b45309]">
+                        <div>
+                            <p class="text-sm text-stone-500">ව්‍යාපාර/ආයෝජන (දියුණුවට - 50%)</p>
+                            <p class="font-bold text-stone-800">ද්වීහි කම්මං පයෝජයේ</p>
+                        </div>
+                        <p class="text-lg font-bold text-[#b45309]">${currencyFormatter.format(dataValues[1])}</p>
+                    </div>
+                    <div class="flex justify-between items-center p-3 bg-white rounded border-l-4 border-[#0369a1]">
+                        <div>
+                            <p class="text-sm text-stone-500">ඉතිරියට (ආපදාවකදී ගැනීමට - 25%)</p>
+                            <p class="font-bold text-stone-800">චතුත්ථඤ්ච නිදහෙය්‍ය</p>
+                        </div>
+                        <p class="text-lg font-bold text-[#0369a1]">${currencyFormatter.format(dataValues[2])}</p>
+                    </div>
+                `;
+
+                // Update or Create Chart
+                if (budgetChart) {
+                    budgetChart.data.datasets[0].data = dataValues;
+                    budgetChart.update();
+                } else {
+                    budgetChart = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['පරිභෝජනයට (25%)', 'ආයෝජනයට (50%)', 'ඉතිරියට (25%)'],
+                            datasets: [{
+                                data: dataValues,
+                                backgroundColor: [
+                                    '#14b8a6', // Teal 500
+                                    '#b45309', // Amber 700
+                                    '#0ea5e9'  // Sky 500
+                                ],
+                                borderWidth: 2,
+                                borderColor: '#ffffff',
+                                hoverOffset: 4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        font: { family: 'sans-serif', size: 14 },
+                                        color: '#292524'
+                                    }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            let label = context.label || '';
+                                            if (label) { label += ': '; }
+                                            if (context.parsed !== null) {
+                                                label += currencyFormatter.format(context.parsed);
+                                            }
+                                            return label;
+                                        }
+                                    }
+                                }
+                            },
+                            cutout: '65%'
+                        }
+                    });
+                }
+            }
+
+            // Listeners for Budget Input
+            incomeInput.addEventListener('input', updateBudget);
+            
+            // Initial Calculation
+            updateBudget();
+
+
+            // --- 2. Interactive Tabs Logic (Anana Sutta) ---
+            
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove active classes
+                    tabBtns.forEach(b => {
+                        b.classList.remove('active', 'bg-buddhist-primary', 'text-white', 'border-buddhist-primary');
+                        b.classList.add('text-stone-600', 'border-stone-300', 'hover:bg-stone-100');
+                    });
+                    tabContents.forEach(c => c.classList.remove('active'));
+
+                    // Add active class to clicked button
+                    btn.classList.remove('text-stone-600', 'border-stone-300', 'hover:bg-stone-100');
+                    btn.classList.add('active');
+
+                    // Show corresponding content
+                    const targetId = btn.getAttribute('data-target');
+                    document.getElementById(targetId).classList.add('active');
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>
