@@ -1,4 +1,298 @@
-<script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buddhist Economic Philosophy</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'buddhist-bg': '#faf8f5',
+                        'buddhist-primary': '#b45309', 
+                        'buddhist-secondary': '#78350f', 
+                        'buddhist-accent': '#0f766e', 
+                        'buddhist-text': '#292524', 
+                        'buddhist-muted': '#78716c', 
+                    },
+                    fontFamily: {
+                        sans: ['system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            background-color: #faf8f5;
+            color: #292524;
+            -webkit-tap-highlight-color: transparent; /* Removes blue flash on mobile tap */
+        }
+        
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        /* Forces active state color */
+        .tab-btn.active {
+            background-color: #b45309 !important;
+            color: white !important;
+            border-color: #b45309 !important;
+        }
+        
+        /* Highlight active nav item */
+        .nav-link.active {
+            color: #b45309;
+            border-bottom: 2px solid #b45309;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row md:justify-between items-center py-2 md:py-3 gap-2 md:gap-0">
+                
+                <div class="flex justify-between items-center w-full md:w-auto">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-2xl md:text-3xl text-buddhist-primary">☸</span>
+                        <span class="font-bold text-lg md:text-xl text-buddhist-secondary truncate" data-i18n="nav_title">Buddhist Economic Philosophy</span>
+                    </div>
+                    <button class="langToggleBtn md:hidden px-3 py-1 rounded-full border-2 border-buddhist-primary text-buddhist-primary font-bold transition shadow-sm text-xs focus:outline-none">
+                        සිංහල
+                    </button>
+                </div>
+                
+                <div class="flex items-center space-x-6 overflow-x-auto hide-scrollbar w-full md:w-auto pb-1 md:pb-0 text-sm font-semibold text-buddhist-muted">
+                    <a href="#budget" class="nav-link whitespace-nowrap py-1 transition-colors focus:outline-none md:hover:text-buddhist-primary" data-i18n="nav_budget">Wealth Division</a>
+                    <a href="#principles" class="nav-link whitespace-nowrap py-1 transition-colors focus:outline-none md:hover:text-buddhist-primary" data-i18n="nav_earn">Earning Wealth</a>
+                    <a href="#happiness" class="nav-link whitespace-nowrap py-1 transition-colors focus:outline-none md:hover:text-buddhist-primary" data-i18n="nav_happy">Financial Happiness</a>
+                </div>
+
+                <button class="langToggleBtn hidden md:block px-4 py-1.5 rounded-full border-2 border-buddhist-primary text-buddhist-primary font-bold md:hover:bg-buddhist-primary md:hover:text-white transition shadow-sm text-sm focus:outline-none">
+                    සිංහල
+                </button>
+
+            </div>
+        </div>
+    </nav>
+
+    <header class="max-w-6xl mx-auto px-4 py-12 md:py-20 text-center fade-in">
+        <h1 class="text-3xl md:text-5xl font-extrabold text-buddhist-secondary mb-6 leading-tight">
+            <span data-i18n="hero_title_1">For a Successful Life</span> <br> 
+            <span class="text-buddhist-primary" data-i18n="hero_title_2">Economic Advice from Buddhism</span>
+        </h1>
+        <p class="text-base md:text-xl text-buddhist-muted max-w-3xl mx-auto leading-relaxed" data-i18n="hero_desc">
+            The teachings of the Buddha provide a great guide not only for the afterlife but also for living a happy and debt-free life here and now. Suttas like Singalovada, Vyagghapajja, and Anana clearly explain how to earn, spend, and protect wealth.
+        </p>
+    </header>
+
+    <div class="max-w-6xl mx-auto px-4 pb-12 flex flex-col items-center justify-center fade-in">
+        <span class="text-[10px] text-stone-400 uppercase tracking-wider mb-1 block">Advertisement</span>
+        
+        <div class="hidden md:block">
+            <script>
+              atOptions = {
+                'key' : '02fc4cc32fb9c2f1ed7b58b1103c59c5',
+                'format' : 'iframe',
+                'height' : 90,
+                'width' : 728,
+                'params' : {}
+              };
+            </script>
+            <script src="https://www.highperformanceformat.com/02fc4cc32fb9c2f1ed7b58b1103c59c5/invoke.js"></script>
+        </div>
+
+        <div class="block md:hidden">
+            <script>
+              atOptions = {
+                'key' : 'fe43ed49e50da2ec71a98bd7e976a5c9',
+                'format' : 'iframe',
+                'height' : 50,
+                'width' : 320,
+                'params' : {}
+              };
+            </script>
+            <script src="https://www.highperformanceformat.com/fe43ed49e50da2ec71a98bd7e976a5c9/invoke.js"></script>
+        </div>
+    </div>
+
+    <section id="budget" class="py-16 bg-white border-y border-stone-200">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <span class="text-4xl mb-4 block">⚖️</span>
+                <h2 class="text-2xl md:text-3xl font-bold text-buddhist-secondary mb-4" data-i18n="s1_title">Singalovada Sutta: Wealth Management</h2>
+                <p class="text-buddhist-muted max-w-2xl mx-auto text-sm md:text-base" data-i18n="s1_desc">
+                    The Buddha preached that a person should divide their earned wealth into four parts. Enter your monthly income below to adapt this Buddhist economic plan to your life.
+                </p>
+                <div class="mt-6 p-4 bg-amber-50 rounded-lg inline-block italic text-buddhist-secondary border-l-4 border-buddhist-primary text-sm md:text-base" data-i18n="s1_quote">
+                    "Ekena bhoge bhunjeyya - Dvihi kammam payojaye<br>Catutthanca nidaheyya - Apadasu bhavissati"
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="bg-stone-50 p-6 md:p-8 rounded-2xl shadow-sm border border-stone-100">
+                    <label for="incomeInput" class="block text-sm font-bold text-stone-700 mb-2" data-i18n="s1_input_label">Enter your monthly income (LKR):</label>
+                    <input type="number" id="incomeInput" value="100000" class="w-full px-4 py-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-buddhist-primary focus:border-buddhist-primary transition text-lg font-semibold text-stone-800" placeholder="Ex: 100000">
+
+                    <div class="mt-8 space-y-4" id="budgetResults"></div>
+                </div>
+
+                <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-stone-100 flex flex-col justify-center">
+                    <h3 class="text-center font-bold text-stone-700 mb-2" data-i18n="s1_chart_title">Wealth Division Ratio (1:2:1)</h3>
+                    <div class="chart-container">
+                        <canvas id="budgetChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="bg-buddhist-bg py-8 flex flex-col items-center justify-center border-b border-stone-200">
+        <span class="text-[10px] text-stone-400 uppercase tracking-wider mb-2 block">Advertisement</span>
+        <div class="bg-white p-2 rounded-lg shadow-sm border border-stone-100 overflow-hidden">
+            <script>
+              atOptions = {
+                'key' : 'b5ccdbe7f129bd8a53b3d51966c4ad19',
+                'format' : 'iframe',
+                'height' : 250,
+                'width' : 300,
+                'params' : {}
+              };
+            </script>
+            <script src="https://www.highperformanceformat.com/b5ccdbe7f129bd8a53b3d51966c4ad19/invoke.js"></script>
+        </div>
+    </div>
+
+    <section id="principles" class="py-16 bg-buddhist-bg">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <span class="text-4xl mb-4 block">🛡️</span>
+                <h2 class="text-2xl md:text-3xl font-bold text-buddhist-secondary mb-4" data-i18n="s2_title">Vyagghapajja Sutta: 4 Factors for Worldly Progress</h2>
+                <p class="text-buddhist-muted max-w-2xl mx-auto text-sm md:text-base" data-i18n="s2_desc">
+                    As preached to Dighajanu, there are four main principles a layperson should follow to become economically stable.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-buddhist-primary transition group">
+                    <div class="text-3xl mb-4">💪</div>
+                    <h3 class="text-xl font-bold text-stone-800 mb-2 transition" data-i18n="c1_title">Utthana Sampada</h3>
+                    <p class="text-sm font-semibold text-buddhist-accent mb-3" data-i18n="c1_sub">Earning through Effort</p>
+                    <p class="text-stone-600 text-sm leading-relaxed" data-i18n="c1_desc">Doing one's job or business with enthusiasm, without laziness. It means earning wealth righteously and legally through sweat and hard work.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-buddhist-primary transition group">
+                    <div class="text-3xl mb-4">🔐</div>
+                    <h3 class="text-xl font-bold text-stone-800 mb-2 transition" data-i18n="c2_title">Arakkha Sampada</h3>
+                    <p class="text-sm font-semibold text-buddhist-accent mb-3" data-i18n="c2_sub">Protecting Earned Wealth</p>
+                    <p class="text-stone-600 text-sm leading-relaxed" data-i18n="c2_desc">Protecting the earned wealth from thieves, fire, water, and unworthy heirs. Minimizing unnecessary expenses and waste is a key component here.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-buddhist-primary transition group">
+                    <div class="text-3xl mb-4">🤝</div>
+                    <h3 class="text-xl font-bold text-stone-800 mb-2 transition" data-i18n="c3_title">Kalyana Mittata</h3>
+                    <p class="text-sm font-semibold text-buddhist-accent mb-3" data-i18n="c3_sub">Good Companionship</p>
+                    <p class="text-stone-600 text-sm leading-relaxed" data-i18n="c3_desc">Associating with virtuous friends who support your progress and do not lead you to gambling or sin. Wealth can be destroyed because of bad friends.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-buddhist-primary transition group">
+                    <div class="text-3xl mb-4">⚖️</div>
+                    <h3 class="text-xl font-bold text-stone-800 mb-2 transition" data-i18n="c4_title">Samajivikata</h3>
+                    <p class="text-sm font-semibold text-buddhist-accent mb-3" data-i18n="c4_sub">Balanced Livelihood</p>
+                    <p class="text-stone-600 text-sm leading-relaxed" data-i18n="c4_desc">Spending according to one's income. Spending more than the income leads to debt. Buddhism also does not approve of being miserly by spending too little.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="happiness" class="py-16 bg-white border-t border-stone-200">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="text-center mb-10">
+                <span class="text-4xl mb-4 block">🌸</span>
+                <h2 class="text-2xl md:text-3xl font-bold text-buddhist-secondary mb-4" data-i18n="s3_title">Anana Sutta: True Financial Happiness</h2>
+                <p class="text-buddhist-muted text-sm md:text-base" data-i18n="s3_desc">
+                    The Buddha pointed out four types of happiness a layperson can enjoy. The ultimate goal of earning and spending money is to achieve this mental well-being. Click the buttons below.
+                </p>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-2 mb-8">
+                <button class="tab-btn active px-4 py-2 md:px-6 md:py-3 rounded-full font-semibold border text-sm md:text-base transition text-stone-600 border-stone-300 focus:outline-none md:hover:bg-stone-100" data-target="tab-1" data-i18n="tab1_btn">1. Atthi Sukha</button>
+                <button class="tab-btn px-4 py-2 md:px-6 md:py-3 rounded-full font-semibold border text-sm md:text-base transition text-stone-600 border-stone-300 focus:outline-none md:hover:bg-stone-100" data-target="tab-2" data-i18n="tab2_btn">2. Bhoga Sukha</button>
+                <button class="tab-btn px-4 py-2 md:px-6 md:py-3 rounded-full font-semibold border text-sm md:text-base transition text-stone-600 border-stone-300 focus:outline-none md:hover:bg-stone-100" data-target="tab-3" data-i18n="tab3_btn">3. Anana Sukha</button>
+                <button class="tab-btn px-4 py-2 md:px-6 md:py-3 rounded-full font-semibold border text-sm md:text-base transition text-stone-600 border-stone-300 focus:outline-none md:hover:bg-stone-100" data-target="tab-4" data-i18n="tab4_btn">4. Anavajja Sukha</button>
+            </div>
+
+            <div class="bg-stone-50 p-6 md:p-8 rounded-2xl shadow-inner border border-stone-200 min-h-[200px] flex items-center justify-center">
+                <div id="tab-1" class="tab-content active text-center max-w-2xl">
+                    <div class="text-4xl md:text-5xl mb-4">💰</div>
+                    <h3 class="text-xl md:text-2xl font-bold text-buddhist-primary mb-3" data-i18n="tab1_title">Atthi Sukha (Happiness of Ownership)</h3>
+                    <p class="text-stone-700 text-base md:text-lg leading-relaxed" data-i18n="tab1_desc">The mental happiness gained by thinking, "I have wealth earned righteously and through my own effort." Having enough assets to use when needed brings great mental relief.</p>
+                </div>
+                <div id="tab-2" class="tab-content text-center max-w-2xl">
+                    <div class="text-4xl md:text-5xl mb-4">🍽️</div>
+                    <h3 class="text-xl md:text-2xl font-bold text-buddhist-primary mb-3" data-i18n="tab2_title">Bhoga Sukha (Happiness of Enjoying Wealth)</h3>
+                    <p class="text-stone-700 text-base md:text-lg leading-relaxed" data-i18n="tab2_desc">The joy of using earned wealth to support oneself, feed one's family, and help others (doing good deeds). Buddhism values utilizing wealth rather than just hoarding it.</p>
+                </div>
+                <div id="tab-3" class="tab-content text-center max-w-2xl">
+                    <div class="text-4xl md:text-5xl mb-4">🕊️</div>
+                    <h3 class="text-xl md:text-2xl font-bold text-buddhist-primary mb-3" data-i18n="tab3_title">Anana Sukha (Happiness of Being Debt-Free)</h3>
+                    <p class="text-stone-700 text-base md:text-lg leading-relaxed" data-i18n="tab3_desc">The clear happiness of thinking, "I owe no debt, small or large, to anyone." Living in debt is shown as a great sorrow in Buddhism. This happiness can be achieved through balanced living (Samajivikata).</p>
+                </div>
+                <div id="tab-4" class="tab-content text-center max-w-2xl">
+                    <div class="text-4xl md:text-5xl mb-4">✨</div>
+                    <h3 class="text-xl md:text-2xl font-bold text-buddhist-primary mb-3" data-i18n="tab4_title">Anavajja Sukha (Happiness of Blamelessness)</h3>
+                    <p class="text-stone-700 text-base md:text-lg leading-relaxed" data-i18n="tab4_desc">The flawless happiness felt in the mind because the way wealth is earned and spent is legal and ethical. This is the highest mental well-being, free from wrong livelihoods like fraud, deceit, or killing animals.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-stone-900 text-stone-400 py-8 text-center">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col items-center">
+            <span class="text-3xl text-stone-600 mb-4 block">☸</span>
+            <p class="text-xs md:text-sm max-w-md mx-auto" data-i18n="footer_text">
+                This page was created to adapt the Buddha's economic philosophy to modern society. Sabba danam dhamma danam jinati.
+            </p>
+        </div>
+    </footer>
+
+    <script>
         document.addEventListener('DOMContentLoaded', () => {
             
             // --- Translation Dictionary ---
@@ -57,15 +351,11 @@
 
             let currentLang = 'en'; 
             
+            // --- Translate Button Logic (Handles both mobile and desktop buttons) ---
             const langToggleBtns = document.querySelectorAll('.langToggleBtn');
 
             function switchLanguage(e) {
-                if (e) {
-                    e.preventDefault();
-                    // These two lines prevent the ad network script from hijacking the click
-                    e.stopPropagation(); 
-                    e.stopImmediatePropagation();
-                }
+                if (e) e.preventDefault();
                 currentLang = currentLang === 'en' ? 'si' : 'en';
                 applyLanguage();
             }
@@ -87,26 +377,27 @@
             }
 
             langToggleBtns.forEach(btn => {
+                // Ensure a single fast click fires immediately
                 btn.addEventListener('click', switchLanguage);
             });
 
-            // --- Javascript Navigation Scroll ---
+            // --- Javascript Navigation Scroll (Fixes mobile double-tap link issue) ---
             const navLinks = document.querySelectorAll('.nav-link');
             
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
-                    e.preventDefault(); 
-                    e.stopPropagation(); // Protect nav links from ad hijack
-                    e.stopImmediatePropagation();
+                    e.preventDefault(); // Stop standard CSS behavior that causes glitch
                     
+                    // Remove active style from all, add to clicked
                     navLinks.forEach(n => n.classList.remove('active'));
                     this.classList.add('active');
 
+                    // Find where to scroll
                     const targetId = this.getAttribute('href').substring(1);
                     const targetSection = document.getElementById(targetId);
                     
                     if (targetSection) {
-                        const headerOffset = 100;
+                        const headerOffset = 100; // Account for sticky menu
                         const elementPosition = targetSection.getBoundingClientRect().top;
                         const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
                         
@@ -178,27 +469,24 @@
                 }
             }
 
-            incomeInput.addEventListener('input', (e) => {
-                e.stopPropagation(); // Protect input field from ad hijack
-                updateBudget();
-            });
+            incomeInput.addEventListener('input', updateBudget);
 
-            // --- Interactive Tabs Logic ---
+            // --- Interactive Tabs Logic (Fixes double tap) ---
             const tabBtns = document.querySelectorAll('.tab-btn');
             const tabContents = document.querySelectorAll('.tab-content');
 
             tabBtns.forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
-                    e.stopPropagation(); // Protect tab buttons from ad hijack
-                    e.stopImmediatePropagation();
                     
+                    // Reset all
                     tabBtns.forEach(b => {
                         b.classList.remove('active');
                         b.classList.add('text-stone-600', 'border-stone-300');
                     });
                     tabContents.forEach(c => c.classList.remove('active'));
 
+                    // Activate clicked
                     btn.classList.remove('text-stone-600', 'border-stone-300');
                     btn.classList.add('active');
 
@@ -211,3 +499,7 @@
             applyLanguage();
         });
     </script>
+
+    <script src="https://pl29312215.profitablecpmratenetwork.com/ec/8a/34/ec8a34a38f5bee4e4892178f1e73b6a4.js"></script>
+</body>
+</html>
